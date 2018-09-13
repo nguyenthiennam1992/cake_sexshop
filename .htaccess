@@ -1,0 +1,30 @@
+# Uncomment the following to prevent the httpoxy vulnerability
+# See: https://httpoxy.org/
+#<IfModule mod_headers.c>
+#    RequestHeader unset Proxy
+#</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine on
+    RewriteRule    ^(\.well-known/.*)$ $1 [L]
+    RewriteRule    ^$    webroot/    [L]
+    RewriteRule    (.*) webroot/$1    [L]
+    # Cache Media Files
+    <FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|swf|mp3|mp4)$">
+        Header set Cache-Control "public"
+        Header set Expires "Mon, 20 Apr 2018 20:00:00 GMT"
+        Header unset Last-Modified
+    </FilesMatch>
+
+    # Cache JavaScript & CSS
+    <FilesMatch "\.(js|css)$">
+        Header set Cache-Control "public"
+        Header set Expires "Mon, 20 Apr 2018 20:00:00 GMT"
+        Header unset Last-Modified
+    </FilesMatch>
+
+    # Disable Caching for Scripts and Other Dynamic Files
+    <FilesMatch "\.(pl|php|cgi|spl|scgi|fcgi)$">
+        Header unset Cache-Control
+    </FilesMatch>
+</IfModule>
